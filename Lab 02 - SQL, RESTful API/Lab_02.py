@@ -2,10 +2,11 @@ import sqlite3
 import requests
 import json
 import pandas as pd
+import datetime
 
-conn = sqlite3.connect("/home/pawel/Documents/RISA/sem2/EAD/"
+conn = sqlite3.connect("/home/pawel/Documents/RISA/sem2/EAD - Eksploracyjna analiza danych/"
                        "Lab 02 - SQL, RESTful API/chinook-database/"
-                       "ChinookDatabase/DataSources/Chinook_Sqlite.sqlite")  # połączenie do bazy danych - pliku
+                       "Chinook_Sqlite.sqlite")  # połączenie do bazy danych - pliku
 c = conn.cursor()
 
 
@@ -26,12 +27,18 @@ def Ex3():
     print(bitcoin_DataFrame)
 
 def Ex4():
-    url = "https://api.openweathermap.org/data/2.5/weather"
-    api_key = "791f6e3a95a283dc48c6d40abf2d140a"
-    latitude = 54.19
-    longitude = 19.06
+    url = "https://api.openweathermap.org/data/2.5/onecall"
+    api_key = "b9385169d9a7e151fb4194b9614ed5fd"
+    latitude = 52.409538
+    longitude = 16.931992
     req = requests.get(f"{url}?lat={latitude}&lon={longitude}&units=metric&exclude=minutely&appid={api_key}")
-    print(req.text)
+
+    weather_dict = json.loads(req.text)
+    weather_DataFrame = pd.DataFrame.from_dict(weather_dict['hourly'])
+    weather_DataFrame['dt'] = weather_DataFrame['dt'] + 7200
+    weather_DataFrame['dt'] = pd.to_datetime(weather_DataFrame['dt'], unit='s')
+    # weather_DataFrame['dt'] = weather_DataFrame['dt'].dt.tz_convert('Europe/Warsaw')
+    print(weather_DataFrame.loc[weather_DataFrame['dt'] == '2023-10-18 20:00:00'])
 
 def attack_against(attacker: str, attacked: str, database: pd.DataFrame):
 
@@ -64,7 +71,7 @@ def attack_against(attacker: str, attacked: str, database: pd.DataFrame):
 
     print(pokemon_df)
 
-    conn = sqlite3.connect("/home/pawel/Documents/RISA/sem2/EAD/Lab 02 - SQL, RESTful API/pokemon_against.sqlite")  # połączenie do bazy danych - pliku
+    conn = sqlite3.connect("/home/pawel/Documents/RISA/sem2/EAD - Eksploracyjna analiza danych/Lab 02 - SQL, RESTful API/pokemon_against.sqlite")  # połączenie do bazy danych - pliku
     c = conn.cursor()
 
     for row in c.execute('SELECT * FROM against_stats WHERE against_bug LIKE \'%against%\''):
@@ -77,7 +84,7 @@ def Ex5():
     attacked = 'charmander'
 
     pokedex_DataFrame_history = pd.read_hdf('pokedex_history.hdf5')
-    print(pokedex_DataFrame_history)
+    # print(pokedex_DataFrame_history)
 
     attack_against(attacker, attacked, pokedex_DataFrame_history)
     
@@ -89,4 +96,4 @@ if __name__ == '__main__':
 
     Ex3()
     Ex4()
-    Ex5()
+    # Ex5()
