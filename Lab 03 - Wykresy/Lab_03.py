@@ -102,15 +102,16 @@ def Ex4():
     plt.show()
 
 def Ex5():
-    # Widać załamanie w rozkładzie normalnym co można
+    # Widać piki znacząco wyróżniające sie na tle rozkładu co można
     # wytłumaczyć zaokrąglaniem wartości w niektórych okręgach
-    # np. z 52.8% do 53%
+    # np. z 52.8% do 53%, zaokrąglanie wartości do wyższych w celu "lepszego wyglądu"
+    # te przyblizenia skupiają sie przy okrągłych liczbach takich jak 85%, 90% czy 95%
     voting = pd.read_csv('russia2020_vote.csv')
     voting['relative'] = voting['yes']/voting['given']
     print(voting['relative'])
 
     fig, ax = plt.subplots()
-    ax.hist(voting['relative'], 300, facecolor='g')
+    ax.hist(voting['relative'], 400, facecolor='g')
 
     plt.show()
 
