@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.signal import find_peaks
 
 df_temperature = pd.read_csv('city_temperature.csv', low_memory=False)
 df_temperature = df_temperature.drop(df_temperature.loc[df_temperature['Year'] < 1995].index)
@@ -158,7 +159,20 @@ def Ex3():
 
     # Compute the average signal across all segments using vectorized operations
     average_signal = np.mean(segments, axis=0)
-    ax[1].plot(average_signal)
+    ax[1].plot(time_vector, average_signal.T) # Transpose the y array to match the dimensions of the x array
+
+    peaks, _ = find_peaks(average_signal, height=0, distance=100)
+    PRT_points = {'values': average_signal[peaks], 'time': time_vector[peaks]}
+    df_PRT_points = pd.DataFrame(PRT_points)
+    df_PRT_points.sort_values(by=['values'], inplace=True, ascending=False)
+    PRT_points = df_PRT_points[:3]
+    print(PRT_points['values'].values)
+
+    ax[1].plot(PRT_points['time'], PRT_points['values'], "o", markersize=5, color='black', markeredgewidth=3)
+
+    for _, (x, y) in enumerate(zip(PRT_points['time'], PRT_points['values'])):
+        ax[1].annotate(str(round(y, 2)), xy=(x, y+10), color='black', weight='bold', ha='center', fontsize=15)
+
     plt.show()
 
 def Ex4():
