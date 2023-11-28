@@ -145,14 +145,12 @@ ax[0].grid(True)
 
 sum_by_year_female = names_df.groupby(['Year', 'Sex'])['Quanity'].sum().loc[(slice(None), 'F')]
 sum_by_year_male = names_df.groupby(['Year', 'Sex'])['Quanity'].sum().loc[(slice(None), 'M')]
-ratio = sum_by_year_female.values/sum_by_year_male.values
+ratio = sum_by_year_female/sum_by_year_male
 
-diff = abs(sum_by_year_female - sum_by_year_male)
-
-min_diff_abs = diff.min()
-max_diff_abs = diff.max()
-min_year = diff.idxmin()
-max_year = diff.idxmax()
+min_diff_abs = ratio.min().round(5)
+max_diff_abs = ratio.max().round(5)
+min_year = ratio.idxmin()
+max_year = ratio.idxmax()
 
 print('######################Zad5#######################')
 print('Min difference:', min_diff_abs, 'at year:', min_year)
@@ -279,7 +277,7 @@ max_difference_letter = letters_difference.nlargest(1)
 letter = max_difference_letter.index.get_level_values('Last letter')[0]
 
 print('######################Zad9#######################')
-print(f'Biggest drop/rise in last letter popularity between 1917 and 2022:\n letter: {letter}, value: {max_difference_letter.values[0]}')
+print(f'Biggest drop/rise in last letter popularity between 1917 and 2022:\n letter: {letter}, value: {max_difference_letter.values[0].round(5)}')
 print('#################################################\n')
 
 width = 0.2
